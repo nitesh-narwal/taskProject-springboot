@@ -31,3 +31,62 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Environment & Credentials ###
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+!.env.example
+
+### Application Properties with Credentials ###
+application-local.yml
+application-local.properties
+application-dev.yml
+application-dev.properties
+application-prod.yml
+application-prod.properties
+application-secret.yml
+application-secret.properties
+
+### Secret/Credential Files ###
+secrets/
+credentials/
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.truststore
+mongoPassword
+**/mongoPassword
+
+### Docker Secrets ###
+docker-compose.override.yml
+docker-compose.local.yml
+
+### Logs ###
+logs/
+*.log
+spring.log
+
+### OS Generated ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+### Temporary Files ###
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+### JDKs ###
+.jdks/
+

@@ -1,0 +1,147 @@
+version: '3.8'
+
+services:
+  # Spring Boot Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopapi-app
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring profiles
+      SPRING_PROFILES_ACTIVE: prod
+      
+      # PostgreSQL
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: shopapi
+      POSTGRES_USER: shopapi
+      POSTGRES_PASSWORD: shopapi123
+      
+      # MongoDB
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_DB: shopapi
+      MONGO_USER: shopapi
+      MONGO_PASSWORD: shopapi123
+      
+      # Redis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis123
+      
+      # JWT
+      JWT_SECRET: ${JWT_SECRET:-bXlWZXJ5TG9uZ0FuZFNlY3VyZVNlY3JldEtleVRoYXRJc0F0TGVhc3QyNTZCaXRzTG9uZ0ZvckhTMjU2QWxnb3JpdGhtMjAyNA==}
+      JWT_ACCESS_EXPIRATION: 900000
+      JWT_REFRESH_EXPIRATION: 604800000
+      
+      # Admin credentials
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-Admin@123456}
+      ADMIN_EMAIL: admin@shopapi.com
+      
+      # Cloudinary (set in .env file)
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-your_cloud_name}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-your_api_key}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-your_api_secret}
+      
+      # Mailjet (set in .env file)
+      MAILJET_API_KEY: ${MAILJET_API_KEY:-your_api_key}
+      MAILJET_API_SECRET: ${MAILJET_API_SECRET:-your_api_secret}
+      MAILJET_SENDER_EMAIL: ${MAILJET_SENDER_EMAIL:-noreply@shopapi.com}
+      
+      # Stripe (set in .env file)
+      STRIPE_API_KEY: ${STRIPE_API_KEY:-sk_test_your_stripe_key}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-whsec_your_webhook_secret}
+      
+      # App URLs
+      APP_BASE_URL: http://localhost:8080
+      FRONTEND_URL: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - shopapi-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: shopapi-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: shopapi
+      POSTGRES_USER: shopapi
+      POSTGRES_PASSWORD: shopapi123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - shopapi-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shopapi -d shopapi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: shopapi-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: shopapi
+      MONGO_INITDB_ROOT_PASSWORD: shopapi123
+      MONGO_INITDB_DATABASE: shopapi
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - shopapi-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: shopapi-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass redis123 --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - shopapi-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis123", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  shopapi-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+

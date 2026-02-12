@@ -1,22 +1,32 @@
 package com.example.shopapi.exception;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ErrorResponse {
 
-    private LocalDateTime timestamp;
+    @Builder.Default
+    private LocalDateTime timestamp = LocalDateTime.now();
     private int status;
     private String error;
+    private String errorCode;
     private String message;
+    private String path;
     private List<String> details;
 
-    public ErrorResponse() {
-        this.timestamp = LocalDateTime.now();
-    }
-
     public ErrorResponse(int status, String error, String message) {
-        this();
+        this.timestamp = LocalDateTime.now();
         this.status = status;
         this.error = error;
         this.message = message;
@@ -27,44 +37,15 @@ public class ErrorResponse {
         this.details = details;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public List<String> getDetails() {
-        return details;
-    }
-
-    public void setDetails(List<String> details) {
-        this.details = details;
+    public static ErrorResponse of(int status, String error, String errorCode, String message, String path) {
+        return ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(status)
+                .error(error)
+                .errorCode(errorCode)
+                .message(message)
+                .path(path)
+                .build();
     }
 }
 

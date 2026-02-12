@@ -11,8 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/api/cart")
+/**
+ * Legacy Cart Controller - Disabled to avoid conflicts with CartControllerNew.
+ * Use CartControllerNew for all cart operations.
+ */
+// @RestController  // Disabled - using CartControllerNew instead
+// @RequestMapping("/api/cart")
 public class CartController {
 
     private final CartService cartService;

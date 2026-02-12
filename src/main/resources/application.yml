@@ -1,0 +1,147 @@
+spring:
+  application:
+    name: Shop API
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+  # PostgreSQL Configuration
+  datasource:
+    url: ${POSTGRES_URL:jdbc:postgresql://ep-hidden-feather-a1n1nrtf-pooler.ap-southeast-1.aws.neon.tech/shopapi?user=neondb_owner&password=npg_yc6DQ9ZmazJH&sslmode=require&channelBinding=require}
+    username: ${POSTGRES_USER:shopapi}
+    password: ${POSTGRES_PASSWORD:npg_yc6DQ9ZmazJH}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb+srv://narwalnitesh14_db_user:aLWmqiASIgj3ALaQ@cluster0.jijkv5j.mongodb.net/shopapi?retryWrites=true&w=majority&appName=Cluster0}
+      database: shopapi
+      auto-index-creation: true
+
+    # Redis Configuration (Redis Cloud)
+    redis:
+      host: ${REDIS_HOST:redis-19279.crce206.ap-south-1-1.ec2.cloud.redislabs.com}
+      port: ${REDIS_PORT:19279}
+      username: ${REDIS_USERNAME:default}
+      password: ${REDIS_PASSWORD:xZRejajPpdjeHwW1FAf9mfrf2YJ3UbDi}
+      timeout: 60000
+      ssl:
+        enabled: true
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      cache-null-values: false
+
+  # Servlet Configuration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jackson:
+    serialization:
+      indent_output: true
+      write_dates_as_timestamps: false
+    default-property-inclusion: non_null
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+    include-binding-errors: always
+
+# JWT Configuration
+jwt:
+  secret: ${JWT_SECRET:myVeryLongAndSecureSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm2024}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}      # 15 minutes
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
+
+# Admin Configuration (Auto-created on startup)
+admin:
+  username: ${ADMIN_USERNAME:admin}
+  password: ${ADMIN_PASSWORD:Admin@123456}
+  email: ${ADMIN_EMAIL:admin@shopapi.com}
+
+# Cloudinary Configuration
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME:de1ow3npn}
+  api-key: ${CLOUDINARY_API_KEY:424274379238584}
+  api-secret: ${CLOUDINARY_API_SECRET:4OEFVTwomKvqW46roiIc18e5BJY}
+  folder: ${CLOUDINARY_FOLDER:shopapi/products}
+
+# Mailjet Configuration
+mailjet:
+  api-key: ${MAILJET_API_KEY:2ee6d35593ec2eef75a01b770f749dcb}
+  api-secret: ${MAILJET_API_SECRET:85ce40b23b913a2fb10e4829671365d6}
+  sender-email: ${MAILJET_SENDER_EMAIL:shopapi@niteshh.me}
+  sender-name: ${MAILJET_SENDER_NAME:Shop API}
+
+# Razorpay Configuration
+razorpay:
+  key-id: ${RAZORPAY_KEY_ID:rzp_test_your_key_id}
+  key-secret: ${RAZORPAY_KEY_SECRET:your_key_secret}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET:your_webhook_secret}
+  currency: ${RAZORPAY_CURRENCY:INR}
+  company-name: ${RAZORPAY_COMPANY_NAME:Shop API}
+  success-url: ${RAZORPAY_SUCCESS_URL:http://localhost:3000/payment/success}
+  cancel-url: ${RAZORPAY_CANCEL_URL:http://localhost:3000/payment/cancel}
+
+# Application URLs
+app:
+  base-url: ${APP_BASE_URL:http://localhost:8080}
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  verification-token-expiry: 900000    # 15 minutes
+  password-reset-token-expiry: 900000  # 15 minutes
+
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when_authorized
+
+# Logging Configuration
+logging:
+  level:
+    root: INFO
+    com.example.shopapi: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
