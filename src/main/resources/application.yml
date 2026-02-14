@@ -6,9 +6,9 @@ spring:
 
   # PostgreSQL Configuration
   datasource:
-    url: ${POSTGRES_URL:jdbc:postgresql://ep-hidden-feather-a1n1nrtf-pooler.ap-southeast-1.aws.neon.tech/shopapi?user=neondb_owner&password=npg_yc6DQ9ZmazJH&sslmode=require&channelBinding=require}
+    url: ${POSTGRES_URL}
     username: ${POSTGRES_USER:shopapi}
-    password: ${POSTGRES_PASSWORD:npg_yc6DQ9ZmazJH}
+    password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -28,19 +28,19 @@ spring:
   # MongoDB Configuration
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb+srv://narwalnitesh14_db_user:aLWmqiASIgj3ALaQ@cluster0.jijkv5j.mongodb.net/shopapi?retryWrites=true&w=majority&appName=Cluster0}
+      uri: ${MONGODB_URI:mongodb+srv}
       database: shopapi
       auto-index-creation: true
 
     # Redis Configuration (Redis Cloud)
     redis:
-      host: ${REDIS_HOST:redis-19279.crce206.ap-south-1-1.ec2.cloud.redislabs.com}
-      port: ${REDIS_PORT:19279}
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
       username: ${REDIS_USERNAME:default}
-      password: ${REDIS_PASSWORD:xZRejajPpdjeHwW1FAf9mfrf2YJ3UbDi}
+      password: ${REDIS_PASSWORD}
       timeout: 60000
       ssl:
-        enabled: true
+        enabled: false
       lettuce:
         pool:
           max-active: 8
@@ -74,29 +74,29 @@ server:
 
 # JWT Configuration
 jwt:
-  secret: ${JWT_SECRET:myVeryLongAndSecureSecretKeyThatIsAtLeast256BitsLongForHS256Algorithm2024}
-  access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}      # 15 minutes
+  secret: ${JWT_SECRET}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:3600000}      # 1 hour (was 15 minutes)
   refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000} # 7 days
 
 # Admin Configuration (Auto-created on startup)
 admin:
-  username: ${ADMIN_USERNAME:admin}
-  password: ${ADMIN_PASSWORD:Admin@123456}
-  email: ${ADMIN_EMAIL:admin@shopapi.com}
+  username: ${ADMIN_USERNAME}
+  password: ${ADMIN_PASSWORD}
+  email: ${ADMIN_EMAIL}
 
 # Cloudinary Configuration
 cloudinary:
-  cloud-name: ${CLOUDINARY_CLOUD_NAME:de1ow3npn}
-  api-key: ${CLOUDINARY_API_KEY:424274379238584}
-  api-secret: ${CLOUDINARY_API_SECRET:4OEFVTwomKvqW46roiIc18e5BJY}
-  folder: ${CLOUDINARY_FOLDER:shopapi/products}
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
+  folder: ${CLOUDINARY_FOLDER}
 
 # Mailjet Configuration
 mailjet:
-  api-key: ${MAILJET_API_KEY:2ee6d35593ec2eef75a01b770f749dcb}
-  api-secret: ${MAILJET_API_SECRET:85ce40b23b913a2fb10e4829671365d6}
+  api-key: ${MAILJET_API_KEY}
+  api-secret: ${MAILJET_API_SECRET}
   sender-email: ${MAILJET_SENDER_EMAIL:shopapi@niteshh.me}
-  sender-name: ${MAILJET_SENDER_NAME:Shop API}
+  sender-name: ${MAILJET_SENDER_NAME}
 
 # Razorpay Configuration
 razorpay:

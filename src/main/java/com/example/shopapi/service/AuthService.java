@@ -154,10 +154,29 @@ public class AuthService {
     public AuthResponse refreshToken(RefreshTokenRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
+        log.debug("Attempting to refresh token, token length: {}",
+                requestRefreshToken != null ? requestRefreshToken.length() : "null");
+
+        if (requestRefreshToken == null || requestRefreshToken.isEmpty()) {
+            log.error("Refresh token is null or empty");
+            throw InvalidTokenException.refreshToken();
+        }
+
+        // Check for common issues
+        if (requestRefreshToken.startsWith("\"") || requestRefreshToken.equals("undefined") || requestRefreshToken.equals("null")) {
+            log.error("Invalid refresh token format - received: {}",
+                    requestRefreshToken.length() > 20 ? requestRefreshToken.substring(0, 20) + "..." : requestRefreshToken);
+            throw InvalidTokenException.refreshToken();
+        }
+
         RefreshToken refreshToken = refreshTokenRepository.findByToken(requestRefreshToken)
-                .orElseThrow(InvalidTokenException::refreshToken);
+                .orElseThrow(() -> {
+                    log.error("Refresh token not found in database");
+                    return InvalidTokenException.refreshToken();
+                });
 
         if (!refreshToken.isValid()) {
+            log.warn("Refresh token is invalid (revoked or expired)");
             refreshTokenRepository.revokeToken(requestRefreshToken);
             throw TokenExpiredException.refreshToken();
         }
@@ -313,6 +332,8 @@ public class AuthService {
     }
 
     private void saveRefreshToken(User user, String token) {
+        log.debug("Saving refresh token for user: {}, token length: {}", user.getUsername(), token.length());
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(token)
                 .user(user)
@@ -320,7 +341,8 @@ public class AuthService {
                 .ipAddress(getClientIpAddress())
                 .userAgent(getUserAgent())
                 .build();
-        refreshTokenRepository.save(refreshToken);
+        RefreshToken saved = refreshTokenRepository.save(refreshToken);
+        log.debug("Refresh token saved with ID: {}", saved.getId());
     }
 
     private String getClientIpAddress() {

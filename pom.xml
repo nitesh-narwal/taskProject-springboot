@@ -22,6 +22,7 @@
         <cloudinary.version>1.36.0</cloudinary.version>
         <razorpay.version>1.4.6</razorpay.version>
         <mailjet.version>5.2.5</mailjet.version>
+        <mongodb.driver.version>4.11.1</mongodb.driver.version>
     </properties>
 
     <dependencies>
@@ -45,6 +46,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+
+        <!-- MongoDB Driver - explicit version for Java 21+ compatibility -->
+        <dependency>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.driver.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -168,6 +176,10 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <!-- JVM arguments to fix TLS/SSL issues with MongoDB Atlas -->
+                    <jvmArguments>
+                        -Djdk.tls.client.protocols=TLSv1.2,TLSv1.3
+                    </jvmArguments>
                 </configuration>
             </plugin>
             <plugin>
