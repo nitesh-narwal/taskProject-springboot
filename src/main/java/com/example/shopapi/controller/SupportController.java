@@ -40,7 +40,14 @@ public class SupportController {
         return ResponseEntity.ok(ApiResponse.success(ticket));
     }
 
-    @GetMapping("/tickets/my-tickets")
+    /**
+     * Get current user's tickets
+     *
+     * SUPPORTED PATHS:
+     * - GET /api/support/tickets/my-tickets (nested under tickets)
+     * - GET /api/support/my-tickets (direct path for frontend compatibility)
+     */
+    @GetMapping({"/tickets/my-tickets", "/my-tickets"})
     @Operation(summary = "Get current user's tickets")
     public ResponseEntity<PagedResponse<TicketResponse>> getMyTickets(
             @RequestParam(defaultValue = "0") int page,

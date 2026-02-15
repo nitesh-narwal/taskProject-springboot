@@ -32,8 +32,12 @@ public class PaymentController {
      * WHY THIS ENDPOINT:
      * - Razorpay requires creating an "order" before accepting payment
      * - Returns order_id and key_id needed by frontend to open checkout modal
+     *
+     * SUPPORTED PATHS:
+     * - POST /api/payment/create-order/{orderId} (original)
+     * - POST /api/payment/create-session/{orderId} (alias for frontend compatibility)
      */
-    @PostMapping("/create-order/{orderId}")
+    @PostMapping({"/create-order/{orderId}", "/create-session/{orderId}"})
     @PreAuthorize("hasAnyRole('USER', 'WORKER', 'ADMIN')")
     @Operation(summary = "Create a Razorpay payment order", 
                description = "Creates a Razorpay order for the given order ID. Returns details needed for frontend checkout.")
